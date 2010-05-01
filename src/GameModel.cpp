@@ -330,7 +330,7 @@ void GameModel::handleActorBrushCollision( ActorModel & actor, const PlanarVolum
 	vec3f & vel = actor.getVelocity( );
 
 	if( plane ) {		
-		pos = pos + vel * t;
+		pos = pos + vel * ( t - 1.0f / 1024.0f );
 		vel = vel - plane->GetNormal( ) * DotProduct( vel, plane->GetNormal( ) );
 	} else {
 		// ut oh
