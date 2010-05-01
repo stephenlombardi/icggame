@@ -1,0 +1,76 @@
+actor_mass		6.0
+actor_size		16.0
+actor_speed		4.0
+actor_deathtime		3.0
+actor_maxhealth		100.0
+
+item_respawntime	5.0
+item_size		12.0
+
+knife_mass		1.0
+knife_size		16.0
+knife_damage		32.0
+knife_lifetime		0.0625
+knife_attackdelay	0.25
+knife_muzzlespeed	16.0
+knife_spread		0.0
+knife_projectiles	1
+
+machinegun_mass		0.25
+machinegun_size		1.0
+machinegun_damage	2.0
+machinegun_attackdelay	0.05
+machinegun_muzzlespeed	3.0
+machinegun_spread	1.0
+machinegun_projectiles	1
+
+shotgun_mass		2.0
+shotgun_size		2.0
+shotgun_damage		3.0
+shotgun_attackdelay	0.75
+shotgun_muzzlespeed	12.0
+shotgun_spread		4.0
+shotgun_projectiles	6
+
+rocketlauncher_mass			2.0
+rocketlauncher_size			2.0
+rocketlauncher_damage			8.0
+rocketlauncher_splash_force		4.0
+rocketlauncher_splash_force_size	32.0
+rocketlauncher_splash_damage		16.0
+rocketlauncher_splash_damage_size	32.0
+rocketlauncher_attackdelay		0.5
+rocketlauncher_muzzlespeed		16.0
+rocketlauncher_spread			1.0
+rocketlauncher_projectiles		1
+
+grenadelauncher_mass			2.0
+grenadelauncher_size			4.0
+grenadelauncher_damage			5.0
+grenadelauncher_lifetime		2.0
+grenadelauncher_splash_force		16.0
+grenadelauncher_splash_force_size	8.0
+grenadelauncher_splash_damage		24.0
+grenadelauncher_splash_damage_size	24.0
+grenadelauncher_attackdelay		1.0
+grenadelauncher_muzzlespeed		8.0
+grenadelauncher_spread			1.0
+grenadelauncher_projectiles		1
+
+flamethrower_mass		0.0625
+flamethrower_size		8.0
+flamethrower_damage		0.125
+flamethrower_lifetime		0.5
+flamethrower_attackdelay	0.03125
+flamethrower_muzzlespeed	0.5
+flamethrower_spread		0.25
+flamethrower_projectiles	2
+
+bfg_mass			4.0
+bfg_size			6.0
+bfg_damage			5.0
+bfg_explosion_projectiles	64
+bfg_attackdelay			2.0
+bfg_muzzlespeed			16.0
+bfg_spread			0.0
+bfg_projectiles			1
