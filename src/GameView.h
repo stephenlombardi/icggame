@@ -251,7 +251,7 @@ private:
 	// deferred rendering
 	GLuint gbufferfbo, galbedoRT, gnormalRT, gdepthRT;
 	Shader gthreedShader, gthreedanimShader, gthreednormmapShader;
-	Shader gpointlightShader, gspotlightShader, gdirlightShader;
+	Shader gpointlightShader, gspotlightShader, gdirlightShader, gambientShader;
 
 	// rendering options
 	bool doGlow;

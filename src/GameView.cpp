@@ -384,6 +384,15 @@ void GameView::initShaders( ) {
 	gdirlightShader.getUniform( "lightmatrix" );
 	gdirlightShader.getUniform( "shadowmap" );
 
+	const std::string gambientAttribs[] = { "in_Position" };
+	gambientShader.initShader( "./shaders/deferred/ambient.vert", "./shaders/deferred/ambient.frag", gambientAttribs, gambientAttribs + 1 );
+	gambientShader.getUniform( "model" );
+	gambientShader.getUniform( "view" );
+	gambientShader.getUniform( "projection" );
+	gambientShader.getUniform( "albedotex" );
+	gambientShader.getUniform( "normaltex" );
+	gambientShader.getUniform( "depthtex" );
+
 	const std::string plainAttribs[] = { "in_Position" };
 	plainShader.initShader( "./shaders/plainshader.vert", "./shaders/plainshader.frag", plainAttribs, plainAttribs + 1 );
 	plainShader.getUniform( "model" );
@@ -1927,6 +1936,7 @@ void GameView::renderShadowMap( const float * lightview, const float * lightproj
 	glViewport( 0, 0, shadowfboSize, shadowfboSize );
 	glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE );
 	glDepthMask( GL_TRUE );
+	glEnable( GL_DEPTH_TEST );
 	glClear( GL_DEPTH_BUFFER_BIT );
 	glDisable( GL_BLEND );
 	glCullFace( GL_FRONT );
@@ -2022,8 +2032,8 @@ void GameView::drawDeferredDirectionallight( const DirectionalLight & directiona
 	//glCullFace( GL_BACK );
 	glCullFace( GL_FRONT );
 	//glDisable( GL_CULL_FACE );
-	glDepthFunc( GL_GEQUAL );
-	//glDisable( GL_DEPTH_TEST );
+	//glDepthFunc( GL_GEQUAL );
+	glDisable( GL_DEPTH_TEST );
 
 	if( lightiteration == 0 ) {
 		glDisable( GL_BLEND );
@@ -2104,7 +2114,8 @@ void GameView::drawDeferredSpotlight( const SpotLight & spotlight, float * proje
 	glViewport( 0, 0, 768, 768 );
 	glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
 	glCullFace( GL_BACK );
-	glDepthFunc( GL_GEQUAL );
+	//glDepthFunc( GL_GEQUAL );
+	glDisable( GL_DEPTH_TEST );
 
 	if( lightiteration == 0 ) {
 		glDisable( GL_BLEND );
@@ -2232,11 +2243,52 @@ void GameView::draw( float time ) {
 	glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 
 	glViewport( 0, 0, 768, 768 );
-	glClearDepth( 0.0f );
+	//glClearDepth( 0.0f );
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-	glClearDepth( 1.0f );
+	//glClearDepth( 1.0f );
+
+	//glDepthMask( GL_FALSE );
+	//glDisable( GL_DEPTH_TEST );
 
 	int lightiteration = 0;
+
+	{
+		glCullFace( GL_FRONT );
+		glDepthFunc( GL_LEQUAL );
+
+		glDisable( GL_BLEND );
+
+		float identity [] = { 1.0f, 0.0f, 0.0f, 0.0f,
+							0.0f, 1.0f, 0.0f, 0.0f,
+							0.0f, 0.0f, 1.0f, 0.0f,
+							0.0f, 0.0f, 0.0f, 1.0f };
+		gambientShader.useProgram( );
+		gambientShader.setUniform( "projection", identity );
+		gambientShader.setUniform( "view", identity );
+		gambientShader.setUniform( "albedotex", 0 );
+		gambientShader.setUniform( "normaltex", 1 );
+		gambientShader.setUniform( "depthtex", 2 );
+
+		glActiveTexture( GL_TEXTURE0 );
+		glBindTexture( GL_TEXTURE_2D, galbedoRT );
+		glActiveTexture( GL_TEXTURE1 );
+		glBindTexture( GL_TEXTURE_2D, gnormalRT );
+		glActiveTexture( GL_TEXTURE2 );
+		glBindTexture( GL_TEXTURE_2D, gdepthRT );
+
+		float model [] = { 2.0f, 0.0f, 0.0f, -1.0f,
+							0.0f, -2.0f, 0.0f, 1.0f,
+							0.0f, 0.0f, 1.0f, 0.0f,
+							0.0f, 0.0f, 0.0f, 1.0f };
+		gambientShader.setUniform( "model", model );
+
+		hudquad.bindBuffers( );
+		hudquad.draw( GL_TRIANGLES );
+
+		lightiteration++;
+	}
+
+	glDisable( GL_DEPTH_TEST );
 
 	for( std::list< DirectionalLight >::const_iterator iter = directionallights.begin( ); iter != directionallights.end( ); ++iter ) {
 		drawDeferredDirectionallight( *iter, viewprojInv, lightiteration );
@@ -2303,9 +2355,14 @@ void GameView::draw( float time ) {
 			drawDeferredPointlight( PointLight( pos, Vector3( 1.0f, 0.8f, 0.4f ), 8.0f * power, 1.0f / 1024.0f ), lightiteration );
 		}
 	}
-		
-	glDepthFunc( GL_LEQUAL );
+	
+	glEnable( GL_DEPTH_TEST );
+	//glDepthMask( GL_TRUE );
+	//glDepthFunc( GL_LEQUAL );
 	glCullFace( GL_BACK );
+
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 	// projectiles/particles
 	{
