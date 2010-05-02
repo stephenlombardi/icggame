@@ -25,73 +25,6 @@ void GameView::init( ) {
 }
 
 void GameView::initFBO( ) {
-	// forward rendering
-	// threed fbo
-	/*glGenFramebuffers( 1, &threedfbo );
-	glBindFramebuffer( GL_FRAMEBUFFER, threedfbo );
-
-	glGenTextures( 1, &ambientRT );
-	glBindTexture( GL_TEXTURE_2D, ambientRT );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA8, 768, 768, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0 );
-
-	glGenTextures( 1, &diffuseRT );
-	glBindTexture( GL_TEXTURE_2D, diffuseRT );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA8, 768, 768, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0 );
-
-	glGenTextures( 1, &projRT );
-	glBindTexture( GL_TEXTURE_2D, projRT );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA8, 768, 768, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0 );
-
-	glGenRenderbuffers( 1, &threedDepthRT );
-	glBindRenderbuffer( GL_RENDERBUFFER, threedDepthRT );
-	glRenderbufferStorage( GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 768, 768 );
-
-	glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ambientRT, 0 );
-	glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, diffuseRT, 0 );
-	glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, projRT, 0 );
-	glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, threedDepthRT );
-
-	// post processing fbo
-	glGenFramebuffers( 1, &postprocfbo );
-	glBindFramebuffer( GL_FRAMEBUFFER, postprocfbo );
-
-	glGenTextures( 1, &postprocRT1 );
-	glBindTexture( GL_TEXTURE_2D, postprocRT1 );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA8, 768, 768, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0 );
-
-	glGenTextures( 1, &postprocRT2 );
-	glBindTexture( GL_TEXTURE_2D, postprocRT2 );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA8, 768, 768, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0 );
-
-	glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, postprocRT1, 0 );
-	glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, postprocRT2, 0 );
-	glDisable( GL_DEPTH_TEST );
-	glDepthMask( GL_FALSE );
-
-	// shadow fbo
-	glGenFramebuffers( 1, &shadowfbo );
-	glBindFramebuffer( GL_FRAMEBUFFER, shadowfbo );
-
-	glGenTextures( 1, &shadowDepthRT );
-	glBindTexture( GL_TEXTURE_2D, shadowDepthRT );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-	glTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 768, 768, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0 );
-
-	glDrawBuffer( GL_NONE );
-	glReadBuffer( GL_NONE );
-	glFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowDepthRT, 0 );*/
-
 	// deferred rendering
 	glGenFramebuffers( 1, &gbufferfbo );
 	glBindFramebuffer( GL_FRAMEBUFFER, gbufferfbo );
@@ -207,119 +140,6 @@ void GameView::initHUD( ) {
 }
 
 void GameView::initShaders( ) {
-	// forward rendering
-	/*const std::string plainAttribs[] = { "in_Position" };
-	plainShader.initShader( "./shaders/plainshader.vert", "./shaders/plainshader.frag", plainAttribs, plainAttribs + 1 );
-	plainShader.getUniform( "model" );
-	plainShader.getUniform( "view" );
-	plainShader.getUniform( "projection" );
-
-	const std::string plainanimAttribs[] = { "in_Position", "in_Normal", "in_Texcoord", "in_Boneid" };
-	plainanimShader.initShader( "./shaders/plainshaderanim.vert", "./shaders/plainshader.frag", plainanimAttribs, plainanimAttribs + 4 );
-	plainanimShader.getUniform( "model" );
-	plainanimShader.getUniform( "view" );
-	plainanimShader.getUniform( "projection" );
-	plainanimShader.getUniform( "bonematrices" );
-
-	const std::string ambientAttribs[] = { "in_Position", "in_Normal", "in_Texcoord" };
-	ambientShader.initShader( "./shaders/ambient.vert", "./shaders/ambient.frag", ambientAttribs, ambientAttribs + 3 );
-	ambientShader.getUniform( "model" );
-	ambientShader.getUniform( "view" );
-	ambientShader.getUniform( "projection" );
-	ambientShader.getUniform( "texture" );
-	ambientShader.getUniform( "intensity" );
-
-	const std::string ambientanimAttribs[] = { "in_Position", "in_Normal", "in_Texcoord", "in_Boneid" };
-	ambientanimShader.initShader( "./shaders/ambientanim.vert", "./shaders/ambient.frag", ambientanimAttribs, ambientanimAttribs + 4 );
-	ambientanimShader.getUniform( "model" );
-	ambientanimShader.getUniform( "view" );
-	ambientanimShader.getUniform( "projection" );
-	ambientanimShader.getUniform( "bonematrices" );
-	ambientanimShader.getUniform( "texture" );
-	ambientanimShader.getUniform( "intensity" );
-
-	const std::string threedtexlightAttribs[] = { "in_Position", "in_Normal", "in_Texcoord" };
-	threedtexlightShader.initShader( "./shaders/threedtexlight.vert", "./shaders/threedtexlight.frag", threedtexlightAttribs, threedtexlightAttribs + 3 );
-	threedtexlightShader.getUniform( "model" );
-	threedtexlightShader.getUniform( "view" );
-	threedtexlightShader.getUniform( "projection" );
-	threedtexlightShader.getUniform( "albedo" );
-	threedtexlightShader.getUniform( "light" );
-	threedtexlightShader.getUniform( "lightcolor" );
-	threedtexlightShader.getUniform( "lightmatrix" );
-	threedtexlightShader.getUniform( "shadowmap" );
-
-	const std::string threedtexlightanimAttribs[] = { "in_Position", "in_Normal", "in_Texcoord", "in_Boneid" };
-	threedtexlightanimShader.initShader( "./shaders/threedtexlightanim.vert", "./shaders/threedtexlight.frag", threedtexlightanimAttribs, threedtexlightanimAttribs + 4 );
-	threedtexlightanimShader.getUniform( "model" );
-	threedtexlightanimShader.getUniform( "view" );
-	threedtexlightanimShader.getUniform( "projection" );
-	threedtexlightanimShader.getUniform( "bonematrices" );
-	threedtexlightanimShader.getUniform( "albedo" );
-	threedtexlightanimShader.getUniform( "light" );
-	threedtexlightanimShader.getUniform( "lightcolor" );
-	threedtexlightanimShader.getUniform( "lightmatrix" );
-	threedtexlightanimShader.getUniform( "shadowmap" );
-
-	const std::string threedtexlightshadowAttribs[] = { "in_Position", "in_Normal", "in_Texcoord" };
-	threedtexlightshadowShader.initShader( "./shaders/threedtexlightshadow.vert", "./shaders/threedtexlightshadow.frag", threedtexlightshadowAttribs, threedtexlightshadowAttribs + 3 );
-	threedtexlightshadowShader.getUniform( "model" );
-	threedtexlightshadowShader.getUniform( "view" );
-	threedtexlightshadowShader.getUniform( "projection" );
-	threedtexlightshadowShader.getUniform( "albedo" );
-	threedtexlightshadowShader.getUniform( "light" );
-	threedtexlightshadowShader.getUniform( "lightcolor" );
-	threedtexlightshadowShader.getUniform( "lightmatrix" );
-	threedtexlightshadowShader.getUniform( "shadowmap" );
-
-	const std::string threedtexlightshadowanimAttribs[] = { "in_Position", "in_Normal", "in_Texcoord", "in_Boneid" };
-	threedtexlightshadowanimShader.initShader( "./shaders/threedtexlightshadowanim.vert", "./shaders/threedtexlightshadow.frag", threedtexlightshadowanimAttribs, threedtexlightshadowanimAttribs + 4 );
-	threedtexlightshadowanimShader.getUniform( "model" );
-	threedtexlightshadowanimShader.getUniform( "view" );
-	threedtexlightshadowanimShader.getUniform( "projection" );
-	threedtexlightshadowanimShader.getUniform( "bonematrices" );
-	threedtexlightshadowanimShader.getUniform( "albedo" );
-	threedtexlightshadowanimShader.getUniform( "light" );
-	threedtexlightshadowanimShader.getUniform( "lightcolor" );
-	threedtexlightshadowanimShader.getUniform( "lightmatrix" );
-	threedtexlightshadowanimShader.getUniform( "shadowmap" );
-
-	const std::string projAttribs[] = { "in_Position" };
-	projShader.initShader( "./shaders/projshader.vert", "./shaders/projshader.frag", projAttribs, projAttribs + 1 );
-	projShader.getUniform( "model" );
-	projShader.getUniform( "view" );
-	projShader.getUniform( "projection" );
-	projShader.getUniform( "color" );
-
-	const std::string threedtexAttribs[] = { "in_Position", "in_Texcoord" };
-	threedtexShader.initShader( "./shaders/threedtex.vert", "./shaders/threedtex.frag", threedtexAttribs, threedtexAttribs + 2 );
-	threedtexShader.getUniform( "model" );
-	threedtexShader.getUniform( "view" );
-	threedtexShader.getUniform( "projection" );
-	threedtexShader.getUniform( "texture" );
-	threedtexShader.getUniform( "texscale" );
-
-	const std::string blurAttribs[] = { "in_Position", "in_Texcoord" };
-	blurShader.initShader( "./shaders/blurshader.vert", "./shaders/blurshader.frag", blurAttribs, blurAttribs + 2 );
-	blurShader.getUniform( "model" );
-	blurShader.getUniform( "view" );
-	blurShader.getUniform( "projection" );
-	blurShader.getUniform( "texture" );
-
-	const std::string hblurAttribs[] = { "in_Position", "in_Texcoord" };
-	hblurShader.initShader( "./shaders/hblur.vert", "./shaders/hblur.frag", hblurAttribs, hblurAttribs + 2 );
-	hblurShader.getUniform( "model" );
-	hblurShader.getUniform( "view" );
-	hblurShader.getUniform( "projection" );
-	hblurShader.getUniform( "texture" );
-
-	const std::string contrastAttribs[] = { "in_Position", "in_Texcoord" };
-	contrastShader.initShader( "./shaders/contrast.vert", "./shaders/contrast.frag", contrastAttribs, contrastAttribs + 2 );
-	contrastShader.getUniform( "model" );
-	contrastShader.getUniform( "view" );
-	contrastShader.getUniform( "projection" );
-	contrastShader.getUniform( "texture" );*/
-
 	// deferred rendering
 	const std::string gthreedAttribs[] = { "in_Position", "in_Normal", "in_Texcoord" };
 	gthreedShader.initShader( "./shaders/deferred/threed.vert", "./shaders/deferred/threed.frag", gthreedAttribs, gthreedAttribs + 3 );
@@ -470,22 +290,6 @@ void GameView::genNormalTexture( std::istream & stream, GLuint & texid ) {
 	delete [] texdata;
 }
 
-/*void GameView::initBrushTextures( ) {
-	// load textures from brushes
-	for( std::map< std::string, DrawableObject >::iterator iter = brushPolygons.begin( ); iter != brushPolygons.end( ); ++iter ) {
-		const std::string & texname = iter->first;
-
-		std::ifstream tgastream( ( "./textures/" + texname ).c_str( ), std::ios::binary );
-		if( tgastream ) {
-			GLuint textureID;
-			genTexture( tgastream, textureID );
-			textures[ texname ] = textureID;
-		} else {
-			//textures[ texname ] = notexTex;
-		}
-	}
-}*/
-
 void GameView::initBrushTextures( ) {
 	// load textures from brushes
 	for( std::map< std::string, DrawableObject >::iterator iter = brushPolygons.begin( ); iter != brushPolygons.end( ); ++iter ) {
@@ -503,8 +307,6 @@ void GameView::initBrushTextures( ) {
 				genNormalTexture( hmapstream, hmapID );
 				normtextures[ texname ] = hmapID;
 			}
-		} else {
-			//textures[ texname ] = notexTex;
 		}
 	}
 }
@@ -608,44 +410,6 @@ void GameView::initTextures( ) {
 }
 
 void GameView::initPlayerModel( ) {
-	/*float * verts, * colors, * normals;
-	unsigned int * indices;
-	int nverts, nindices;
-	readSMF( "./meshes/bound-bunny_200.smf", nverts, verts, colors, normals, nindices, indices );
-
-	float * texcoords = new float[ nverts * 2 ];
-	for( int i = 0; i < nverts; i++ ) {
-		if( normals[ i * 3 + 0 ] > normals[ i * 3 + 1 ] && normals[ i * 3 + 0 ] > normals[ i * 3 + 2 ] ) {
-			texcoords[ i * 2 + 0 ] = verts[ i * 3 + 1 ] / 8.0f;
-			texcoords[ i * 2 + 1 ] = verts[ i * 3 + 2 ] / 8.0f;
-		} else if( normals[ i * 3 + 1 ] > normals[ i * 3 + 0 ] && normals[ i * 3 + 1 ] > normals[ i * 3 + 2 ] ) {
-			texcoords[ i * 2 + 0 ] = verts[ i * 3 + 0 ] / 8.0f;
-			texcoords[ i * 2 + 1 ] = verts[ i * 3 + 2 ] / 8.0f;
-		} else {
-			texcoords[ i * 2 + 0 ] = verts[ i * 3 + 0 ] / 8.0f;
-			texcoords[ i * 2 + 1 ] = verts[ i * 3 + 1 ] / 8.0f;
-		}
-	}
-
-	playerModelSize = 0.0f;
-	for( int i = 0; i < nverts * 3; i += 3 ) {
-		playerModelSize += Norm( Vec< 3 >::Tor( &verts[ i ] ) );
-	}
-	playerModelSize /= nverts;
-
-	playerModel.initVAO( );
-	playerModel.addBuffers( 4 );
-	playerModel.setBuffer( 0, verts, nverts, 3, GL_STATIC_DRAW );
-	playerModel.setBuffer( 1, normals, nverts, 3, GL_STATIC_DRAW );
-	playerModel.setBuffer( 2, texcoords, nverts, 2, GL_STATIC_DRAW );
-	playerModel.setBuffer( 3, indices, nindices, GL_STATIC_DRAW );
-
-	delete [] verts;
-	//delete [] colors;
-	delete [] normals;
-	delete [] texcoords;
-	delete [] indices;*/
-
 	{
 		std::ifstream meshstream( "./meshes/zombie02.ms3d", std::ios::binary );
 		MS3DToMesh meshloader;
@@ -687,7 +451,6 @@ void GameView::initProjectileModels( ) {
 		float * verts;
 		int nverts;
 
-		//genSphere( verts, nverts, 1.0f, 8, 8 );
 		genCube( verts, nverts, 1.0f, 1.0f, 1.0f );
 
 		cubeShape.initVAO( );
@@ -713,7 +476,6 @@ void GameView::initProjectileModels( ) {
 		int nverts;
 
 		genSphere( verts, nverts, 1.0f, 8, 8 );
-		//genCube( verts, nverts, 1.0f, 1.0f, 1.0f );
 
 		sphereShape.initVAO( );
 		sphereShape.addBuffers( 1 );
@@ -721,20 +483,6 @@ void GameView::initProjectileModels( ) {
 
 		delete [] verts;
 	}
-
-	/*projModels[ typeid( ProjectileMelee ).name( ) ] = sphereShape;
-	projModels[ typeid( ProjectileBullet ).name( ) ] = cubeShape;
-	projModels[ typeid( ProjectileBounceLaser ).name( ) ] = sphereShape;
-	projModels[ typeid( ProjectileRocket ).name( ) ] = cubeShape;
-	projModels[ typeid( ProjectileGrenade ).name( ) ] = sphereShape;
-	projModels[ typeid( ProjectileFlame ).name( ) ] = sphereShape;
-
-	projModelFuncs[ typeid( ProjectileMelee ).name( ) ] = &GameView::projIdentity;
-	projModelFuncs[ typeid( ProjectileBullet ).name( ) ] = &GameView::projStretchVelocity;
-	projModelFuncs[ typeid( ProjectileBounceLaser ).name( ) ] = &GameView::projIdentity;
-	projModelFuncs[ typeid( ProjectileRocket ).name( ) ] = &GameView::projStretchVelocity;
-	projModelFuncs[ typeid( ProjectileGrenade ).name( ) ] = &GameView::projIdentity;
-	projModelFuncs[ typeid( ProjectileFlame ).name( ) ] = &GameView::projIdentity;*/
 
 	projDrawFuncs[ typeid( ProjectileMelee ).name( ) ] = &GameView::drawProjectileMelee;
 	projDrawFuncs[ typeid( ProjectileBullet ).name( ) ] = &GameView::drawProjectileBullet;
@@ -783,7 +531,6 @@ void GameView::initItemModels( ) {
 	}
 
 	itemDrawFuncs[ typeid( ItemWeapon ).name( ) ] = &GameView::drawItemWeapon;
-	//itemDrawFuncs[ typeid( ItemHealth ).name( ) ] = &GameView::drawItemHealth;
 	itemDrawFuncs[ typeid( ItemPowerup ).name( ) ] = &GameView::drawItemPowerup;
 }
 
@@ -799,30 +546,6 @@ void GameView::uninit( ) {
 	uninitTextures( );
 	uninitBrushes( );
 	uninitActorText( );
-
-	// forward rendering
-	/*contrastShader.destroyShader( );
-	ambientShader.destroyShader( );
-	blurShader.destroyShader( );
-	threedtexShader.destroyShader( );
-	//twodtexShader.destroyShader( );
-	projShader.destroyShader( );
-	threedtexlightshadowShader.destroyShader( );
-	threedtexlightShader.destroyShader( );
-	plainShader.destroyShader( );
-
-	glDeleteTextures( 1, &ambientRT );
-	glDeleteTextures( 1, &diffuseRT );
-	glDeleteTextures( 1, &projRT );
-	glDeleteRenderbuffers( 1, &threedDepthRT );
-	glDeleteFramebuffers( 1, &threedfbo );
-
-	glDeleteTextures( 1, &postprocRT1 );
-	glDeleteTextures( 1, &postprocRT2 );
-	glDeleteFramebuffers( 1, &postprocfbo );
-
-	glDeleteTextures( 1, &shadowDepthRT );
-	glDeleteFramebuffers( 1, &shadowfbo );*/
 
 	// deferred rendering
 	gdirlightShader.destroyShader( );
@@ -883,7 +606,6 @@ void GameView::clearObjects( ) {
 	bloodparticles.clear( );
 	explosions.clear( );
 	itemparticles.clear( );
-	//lights.clear( );
 	pointlights.clear( );
 	spotlights.clear( );
 	directionallights.clear( );
@@ -1113,7 +835,6 @@ void GameView::actorDamaged( const ActorModel * attacker, const ActorModel & att
 	updateActorText( attackee );
 
 	for( int i = 0; i < 32; i++ ) {
-		//vec3f position = attackee.getPosition( ) + attackee.getBoundingRadius( ) * Normalize( attacker.getPosition( ) - attackee.getPosition( ) );
 		vec3f velocity = Vector3( (float)rand( ) / RAND_MAX - 0.5f, (float)rand( ) / RAND_MAX - 0.5f, (float)rand( ) / RAND_MAX - 0.5f );
 		bloodparticles.push_back( Particle( attackee.getPosition( ), velocity * 8.0f, starttime, 0.75f ) );
 	}
@@ -1131,8 +852,6 @@ void GameView::actorKilled( const ActorModel * killer, const ActorModel & killee
 		updateActorText( *killer );
 	}
 	updateActorText( killee );
-
-	//std::clog << killee.getName( ) << " killed by " << ( killer ? killer->getName( ) : "?" ) << std::endl;
 }
 
 void GameView::projectileCreation( const ActorModel & actor, const vec3f & position, float starttime ) {
@@ -1154,14 +873,9 @@ void GameView::projectileExplosion( const vec3f & position, float starttime ) {
 	explosions.push_back( Particle( position, vec3f( 0.0f ), starttime, 0.25f ) );
 }
 
-/*void GameView::addLight( const vec3f & position, const Matrix< 4, 1, float > & color ) {
-	lights.push_back( position );
-	lightcolors.push_back( color );
-}*/
-
-void GameView::addLight( const vec3f & position, const vec3f & color, float power ) {
+/*void GameView::addLight( const vec3f & position, const vec3f & color, float power ) {
 	lights.push_back( Light( position, color, power ) );
-}
+}*/
 
 void GameView::addPointLight( const PointLight & pointlight ) {
 	pointlights.push_back( pointlight );
@@ -1174,105 +888,6 @@ void GameView::addSpotLight( const SpotLight & spotlight ) {
 void GameView::addDirectionalLight( const DirectionalLight & directionallight ) {
 	directionallights.push_back( directionallight );
 }
-
-/*void GameView::setBrushes( std::map< std::string, std::list< PlanarPolygon< 3, float, TexturedPlane< 3, float > > > > & texpolygons ) {
-	typedef std::map< std::string, std::list< PlanarPolygon< 3, float, TexturedPlane< 3, float > > > >::iterator texpolygonsiter;
-
-	std::map< std::string, std::pair< int, int > > texdimensions;
-	for( texpolygonsiter iter = texpolygons.begin( ); iter != texpolygons.end( ); ++iter ) {
-		const std::string & texname = iter->first;
-
-		int tgawidth, tgaheight, tgadepth;
-		std::ifstream tgastream( texname.c_str( ), std::ios::binary );
-		if( tgastream ) {
-			TGA::GetData( tgastream, tgawidth, tgaheight, tgadepth );
-			texdimensions[ texname ] = std::make_pair( tgawidth, tgaheight );
-		} else {
-			texdimensions[ texname ] = std::make_pair( 256, 256 );
-		}
-	}
-
-	for( texpolygonsiter iter = texpolygons.begin( ); iter != texpolygons.end( ); ++iter ) {
-		const std::string & texname = iter->first;
-		std::list< PlanarPolygon< 3, float, TexturedPlane< 3, float > > > & polygons = iter->second;
-
-		std::vector< float > verts, texcoords, normals, tangents, bitangents;
-		std::vector< unsigned int > indices;
-
-		for( std::list< PlanarPolygon< 3, float, TexturedPlane< 3, float > > >::iterator piter = polygons.begin( ); piter != polygons.end( ); piter++ ) {
-			PlanarPolygon< 3, float, TexturedPlane< 3, float > > & polygon = *piter;
-			const vec3f & normal = polygon.plane.GetNormal( );
-
-			for( size_t i = 1; i < polygon.points.size( ) - 1; i++ ) {
-				indices.push_back( verts.size( ) / 3 + 0 );
-				indices.push_back( verts.size( ) / 3 + i + 1 );
-				indices.push_back( verts.size( ) / 3 + i );
-			}
-
-			for( std::list< vec3f >::iterator viter = polygon.points.begin( ); viter != polygon.points.end( ); viter++ ) {
-				vec3f & point = *viter;
-
-				verts.push_back( point[ 0 ] );
-				verts.push_back( point[ 1 ] );
-				verts.push_back( point[ 2 ] );
-
-				normals.push_back( normal[ 0 ] );
-				normals.push_back( normal[ 1 ] );
-				normals.push_back( normal[ 2 ] );
-
-				if( abs( normal[ 0 ] ) > abs( normal[ 1 ] ) && abs( normal[ 0 ] ) > abs( normal[ 2 ] ) ) {
-					texcoords.push_back( point[ 1 ] / texdimensions[ texname ].first );
-					texcoords.push_back( point[ 2 ] / texdimensions[ texname ].second );
-				} else if( abs( normal[ 1 ] ) > abs( normal[ 0 ] ) && abs( normal[ 1 ] ) > abs( normal[ 2 ] ) ) {
-					texcoords.push_back( point[ 0 ] / texdimensions[ texname ].first );
-					texcoords.push_back( point[ 2 ] / texdimensions[ texname ].second );
-				} else if( abs( normal[ 2 ] ) > abs( normal[ 0 ] ) && abs( normal[ 2 ] ) > abs( normal[ 1 ] ) ) {
-					texcoords.push_back( point[ 0 ] / texdimensions[ texname ].first );
-					texcoords.push_back( point[ 1 ] / texdimensions[ texname ].second );
-				}
-			}
-
-			for( std::list< vec3f >::iterator viter = polygon.points.begin( ); viter != polygon.points.end( ); viter++ ) {
-				vec3f & point = *viter;
-
-				vec3f p0 = Vec< 3 >::Tor( verts[ verts.size( ) - polygon.points.size( ) * 3 ] );
-				vec3f p1 = Vec< 3 >::Tor( verts[ verts.size( ) - polygon.points.size( ) * 3 + 3 ] );
-				vec3f p2 = Vec< 3 >::Tor( verts[ verts.size( ) - polygon.points.size( ) * 3 + 6 ] );
-
-				vec2f uv0 = Vec< 3 >::Tor( texcoords[ texcoords.size( ) - polygon.points.size( ) * 2 ] );
-				vec2f uv1 = Vec< 3 >::Tor( texcoords[ texcoords.size( ) - polygon.points.size( ) * 2 + 2 ] );
-				vec2f uv2 = Vec< 3 >::Tor( texcoords[ texcoords.size( ) - polygon.points.size( ) * 2 + 4 ] );
-
-				vec3f q1 = p1 - p0, q2 = p2 - p0;
-				vec3f s = uv1 - uv0, t = uv2 - uv0;
-
-				float denom = s[ 0 ] * t[ 1 ] - s[ 1 ] * t[ 0 ];
-				float tangent [] = { ( q1[ 0 ] * t[ 1 ] - q2[ 0 ] * t[ 0 ] ) / denom,
-									( q1[ 1 ] * t[ 1 ] - q2[ 1 ] * t[ 0 ] ) / denom,
-									( q1[ 2 ] * t[ 1 ] - q2[ 2 ] * t[ 0 ] ) / denom };
-				float bitangent [] = { ( -q1[ 0 ] * s[ 1 ] + q2[ 0 ] * s[ 0 ] ) / denom,
-									( q1[ 1 ] * s[ 1 ] - q2[ 1 ] * s[ 0 ] ) / denom,
-									( q1[ 2 ] * s[ 1 ] - q2[ 2 ] * s[ 0 ] ) / denom };
-
-				tangents.push_back( tangent[ 0 ] );
-				tangents.push_back( tangent[ 1 ] );
-				tangents.push_back( tangent[ 2 ] );
-
-				bitangents.push_back( bitangent[ 0 ] );
-				bitangents.push_back( bitangent[ 1 ] );
-				bitangents.push_back( bitangent[ 2 ] );
-			}
-		}
-
-		brushPolygons[ texname ] = DrawableObject( );
-		brushPolygons[ texname ].initVAO( );
-		brushPolygons[ texname ].addBuffers( 4 );
-		brushPolygons[ texname ].setBuffer( 0, &verts[ 0 ], verts.size( ) / 3, 3, GL_STATIC_DRAW );
-		brushPolygons[ texname ].setBuffer( 1, &normals[ 0 ], normals.size( ) / 3, 3, GL_STATIC_DRAW );
-		brushPolygons[ texname ].setBuffer( 2, &texcoords[ 0 ], texcoords.size( ) / 2, 2, GL_STATIC_DRAW );
-		brushPolygons[ texname ].setBuffer( 3, &indices[ 0 ], indices.size( ), GL_STATIC_DRAW );
-	}
-}*/
 
 void GameView::setBrushes( std::map< std::string, std::list< PlanarPolygon< 3, float, TexturedPlane< 3, float > > > > & texpolygons ) {
 	typedef std::map< std::string, std::list< PlanarPolygon< 3, float, TexturedPlane< 3, float > > > >::iterator texpolygonsiter;
@@ -1461,7 +1076,6 @@ void GameView::drawActors( Shader & shader, const ActorModel * actorIgnore ) {
 				transformations[ i ] = KeyframeMatrix( walkAnimation[ i ].GetInterpolatedKeyframe( walkTimer[ actor.getName( ) ], true ) );
 			}
 			boneMatrices.Calculate( transformations.begin( ), transformations.end( ) );
-			//boneMatrices.Calculate( walkTimer[ actor.getName( ) ], walkAnimation );
 			shader.setUniform( "bonematrices", &boneMatrices.GetMatrices( )[ 0 ]( 0, 0 ), boneMatrices.GetMatrices( ).size( ) );
 
 			float scale = actor.getBoundingRadius( ) / playerModelSize;
@@ -1666,7 +1280,7 @@ void GameView::drawProjectileBFG( const ProjectileBFG * projectile, float time )
 	sphereShape.draw( GL_TRIANGLES );
 }
 
-void GameView::drawWorldShadowMapped( const float * projection, const float * view, const Light & light, const vec3f & lightdirection, const vec3f & lightup, float fov, float lightatten, int & lightiteration, const ActorModel * actorIgnore ) {
+/*void GameView::drawWorldShadowMapped( const float * projection, const float * view, const Light & light, const vec3f & lightdirection, const vec3f & lightup, float fov, float lightatten, int & lightiteration, const ActorModel * actorIgnore ) {
 	static const float identitymatrix [] = { 1.0f, 0.0f, 0.0f, 0.0f,
 											0.0f, 1.0f, 0.0f, 0.0f,
 											0.0f, 0.0f, 1.0f, 0.0f,
@@ -1685,7 +1299,6 @@ void GameView::drawWorldShadowMapped( const float * projection, const float * vi
 
 	float lightmatrix[ 16 ];
 	RowMajor< 4, 4, float >( lightmatrix ) = RowMajor< 4, 4, float >( bias ) * RowMajor< 4, 4, float >( lightproj ) * RowMajor< 4, 4, float >( lightview );
-	//RowMajor< 4, 4, float >( lightmatrix ) = RowMajor< 4, 4, float >( lightproj ) * RowMajor< 4, 4, float >( lightview );
 
 	// render shadow map
 	glBindFramebuffer( GL_FRAMEBUFFER, shadowfbo );
@@ -1771,10 +1384,9 @@ void GameView::drawWorldShadowMapped( const float * projection, const float * vi
 	glBindTexture( GL_TEXTURE_2D, actorTex );
 	threedtexlightshadowanimShader.setUniform( "albedo", 0 );
 	drawActors( threedtexlightshadowanimShader, 0 );
-}
+}*/
 
-//void GameView::drawWorldLit( const vec3f & lightposition, const vec3f & lightcolor, float lightpower, float lightatten, int & lightiteration ) {
-void GameView::drawWorldLit( const float * projection, const float * view, const Light & light, float lightatten, int & lightiteration ) {
+/*void GameView::drawWorldLit( const float * projection, const float * view, const Light & light, float lightatten, int & lightiteration ) {
 	static const float identitymatrix [] = { 1.0f, 0.0f, 0.0f, 0.0f,
 											0.0f, 1.0f, 0.0f, 0.0f,
 											0.0f, 0.0f, 1.0f, 0.0f,
@@ -1807,7 +1419,7 @@ void GameView::drawWorldLit( const float * projection, const float * view, const
 	glBindTexture( GL_TEXTURE_2D, actorTex );
 	threedtexlightanimShader.setUniform( "albedo", 0 );
 	drawActors( threedtexlightanimShader, 0 );
-}
+}*/
 
 void GameView::drawHealthBar( const ActorModel & actor ) {
 	if( actor.getHealth( ) > 0.0f ) {
@@ -2479,537 +2091,6 @@ void GameView::draw( float time ) {
 		}
 	}
 }
-
-// forward rendering
-/*void GameView::draw( float time ) {
-	float projection[ 16 ];
-	getProjectionMatrix( projection );
-
-	float view[ 16 ];
-	getViewMatrix( view );
-
-	static const float identitymatrix [] = { 1.0f, 0.0f, 0.0f, 0.0f,
-											0.0f, 1.0f, 0.0f, 0.0f,
-											0.0f, 0.0f, 1.0f, 0.0f,
-											0.0f, 0.0f, 0.0f, 1.0f };
-
-	// ambient pass
-	{
-		glBindFramebuffer( GL_FRAMEBUFFER, threedfbo );
-		glDrawBuffer( GL_COLOR_ATTACHMENT0 );
-		glViewport( 0, 0, 768, 768 );
-		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-		glDisable( GL_BLEND );
-		glEnable( GL_DEPTH_TEST );
-		glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
-		glDepthMask( GL_TRUE );
-
-		ambientShader.useProgram( );
-		ambientShader.setUniform( "projection", projection );
-		ambientShader.setUniform( "view", view );
-		ambientShader.setUniform( "intensity", doDynamicLighting ? ambientIntensity : 1.0f );
-		ambientShader.setUniform( "model", identitymatrix );
-		drawBrushes( ambientShader, "texture", true );
-
-		//drawActors( ambientShader, 0 );
-		ambientanimShader.useProgram( );
-		ambientanimShader.setUniform( "projection", projection );
-		ambientanimShader.setUniform( "view", view );
-		ambientanimShader.setUniform( "intensity", doDynamicLighting ? ambientIntensity : 1.0f );
-		ambientanimShader.setUniform( "model", identitymatrix );
-		glActiveTexture( GL_TEXTURE0 );
-		glBindTexture( GL_TEXTURE_2D, actorTex );
-		ambientanimShader.setUniform( "texture", 0 );
-		drawActors( ambientanimShader, 0 );
-	}
-
-	// dynamic lighting
-	glDrawBuffer( GL_COLOR_ATTACHMENT1 );
-	glClear( GL_COLOR_BUFFER_BIT );
-	if( doDynamicLighting ) {
-		glEnable( GL_CULL_FACE );
-
-		int lightiteration = 0;
-
-		// draw world lights
-		for( std::list< Light >::iterator iter = lights.begin( ); iter != lights.end( ); ++iter ) {
-			Light & light = *iter;
-
-			drawWorldShadowMapped( projection, view, light, Vector3( 0.0f, -1.0f, 0.0f ), Vector3( 0.0f, 0.0f, -1.0f ), 3.1415926f / 2.0f, 1.0f / 4096.0f, lightiteration, 0 );
-			//drawWorldLit( projection, view, light, 1.0f / 4096.0f, lightiteration );
-
-		}
-
-		// draw flashlights
-		for( std::list< ActorModel >::const_iterator iter = game->getActors( ).begin( ); iter != game->getActors( ).end( ); ++iter ) {
-			if( iter->getName( ) == "Player" && iter->getHealth( ) > 0.0f ) {
-				vec3f lightcolor = Vector3( 1.0f, 1.0f, 1.0f );
-				const vec3f & lightpos = iter->getPosition( );
-				const vec3f lightdir = Vector3N( iter->getOrientation( )[ 0 ], 0.0f, iter->getOrientation( )[ 2 ] );
-
-				drawWorldShadowMapped( projection, view, Light( lightpos, lightcolor, 4.0f ), lightdir, Vector3( 0.0f, 1.0f, 0.0f ), 3.1415926f / 3.0f, 1.0f / 4096.0f, lightiteration, &(*iter) );
-				//drawWorldLit( projection, view, Light( lightpos, lightcolor, 4.0f ), 1.0f / 4096.0f, lightiteration );
-			}
-		}
-
-		bWriteShadowMaps = false;
-
-		//threedtexlightShader.useProgram( );
-		//threedtexlightShader.setUniform( "projection", projection );
-		//threedtexlightShader.setUniform( "view", view );
-
-		// explosion lighting
-		for( std::list< Particle >::iterator iter = explosions.begin( ); iter != explosions.end( ); ++iter ) {
-			Particle & particle = *iter;
-
-			float power = 1.0f - ( time - particle.starttime ) / particle.keepalive;
-			drawWorldLit( projection, view, Light( particle.position, Vector3( 1.0f, 0.8f, 0.4f ), 8.0f * power ), 1.0f / 2048.0f, lightiteration );
-		}
-
-		// muzzle flares
-		for( std::map< const ActorModel *, float >::const_iterator iter = muzzleFlares.begin( ); iter != muzzleFlares.end( ); ++iter ) {
-			const ActorModel * actor = iter->first;
-			float starttime = iter->second;
-
-			if( time - starttime < 1.0f / 16.0f ) {
-
-				vec3f pos = actor->getPosition( ) + actor->getOrientation( ) * actor->getBoundingRadius( );
-				float power = 1.0f - ( time - starttime ) / 0.0625f;
-				drawWorldLit( projection, view, Light( pos, Vector3( 1.0f, 0.8f, 0.4f ), 4.0f * power ), 1.0f / 2048.0f, lightiteration );
-			}
-		}
-	}
-
-	// projectiles/particles
-	{
-		glDrawBuffer( GL_COLOR_ATTACHMENT2 );
-		glClear( GL_COLOR_BUFFER_BIT );
-
-		projShader.useProgram( );
-		projShader.setUniform( "projection", projection );
-		projShader.setUniform( "view", view );
-
-		//std::vector< Projectile * > projcopy( game->getProjectiles( ).begin( ), game->getProjectiles( ).end( ) );
-		//std::sort( projcopy.begin( ), projcopy.end( ), ProjCmp );
-		//for( std::vector< Projectile * >::const_iterator iter = projcopy.begin( ); iter != projcopy.end( ); ++iter ) {
-		// draw projectiles
-		if( drawProjectiles ) {
-			for( std::list< Projectile * >::const_iterator iter = game->getProjectiles( ).begin( ); iter != game->getProjectiles( ).end( ); ++iter ) {
-				const Projectile * projectile = *iter;
-
-				(*projDrawFuncs[ typeid( *projectile ).name( ) ])( this, projectile, time );
-			}
-		}
-
-		if( drawParticles ) {
-			// draw particles
-			sphereShape.bindBuffers( );
-			for( std::list< Particle >::iterator iter = particles.begin( ); iter != particles.end( ); ++iter ) {
-				Particle & particle = *iter;
-
-				float scale = ( time - particle.starttime ) / particle.keepalive;
-
-				float model [] = { 1.0f, 0.0f, 0.0f, particle.position[ 0 ],
-									0.0f, 1.0f, 0.0f, particle.position[ 1 ],
-									0.0f, 0.0f, 1.0f, particle.position[ 2 ],
-									0.0f, 0.0f, 0.0f, 1.0f };
-
-				projShader.setUniform( "model", model );
-				projShader.setUniform( "color", 1.0f, 0.7f, 0.3f, 1.0f - scale * scale * scale * scale );
-
-				sphereShape.draw( GL_TRIANGLES );
-			}
-
-			// draw blood particles
-			for( std::list< Particle >::iterator iter = bloodparticles.begin( ); iter != bloodparticles.end( ); ++iter ) {
-				Particle & particle = *iter;
-
-				float scale = ( time - particle.starttime ) / particle.keepalive;
-
-				float model [] = { 1.0f, 0.0f, 0.0f, particle.position[ 0 ],
-									0.0f, 1.0f, 0.0f, particle.position[ 1 ],
-									0.0f, 0.0f, 1.0f, particle.position[ 2 ],
-									0.0f, 0.0f, 0.0f, 1.0f };
-
-				projShader.setUniform( "model", model );
-				projShader.setUniform( "color", 0.8f, 0.1f, 0.1f, 1.0f - scale * scale * scale * scale );
-
-				sphereShape.draw( GL_TRIANGLES );
-			}
-		}
-	}
-
-	// items, health bars, misc, etc.,
-	{
-		glDrawBuffer( GL_COLOR_ATTACHMENT1 );
-		glViewport( 0, 0, 768, 768 );
-
-		glDisable( GL_BLEND );
-
-		threedtexShader.useProgram( );
-		threedtexShader.setUniform( "projection", projection );
-		threedtexShader.setUniform( "view", view );
-		threedtexShader.setUniform( "texscale", 1.0f );
-
-		// items
-		for( std::list< Item * >::const_iterator iter = game->getItems( ).begin( ); iter != game->getItems( ).end( ); ++iter ) {
-			const Item * item = *iter;
-
-			(*itemDrawFuncs[ typeid( *item ).name( ) ])( this, item, time );
-		}
-
-		glEnable( GL_BLEND );
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		//glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-
-		projShader.useProgram( );
-		projShader.setUniform( "projection", projection );
-		projShader.setUniform( "view", view );
-
-		// health bars
-		if( !firstperson ) {
-			cubeShape.bindBuffers( );
-			for( std::list< ActorModel >::const_iterator iter = game->getActors( ).begin( ); iter != game->getActors( ).end( ); ++iter ) {
-				const ActorModel & actor = *iter;
-
-				drawHealthBar( actor );
-			}
-		}
-
-		// draw spawning/dying actors
-		playerModel.bindBuffers( );
-		for( std::list< ActorModel >::const_iterator iter = game->getActors( ).begin( ); iter != game->getActors( ).end( ); ++iter ) {
-			const ActorModel & actor = *iter;
-
-			drawDyingActor( actor, time );
-		}
-
-		// draw explosion spheres
-		sphereShape.bindBuffers( );
-		for( std::list< Particle >::iterator iter = explosions.begin( ); iter != explosions.end( ); ++iter ) {
-			Particle & explosion = *iter;
-
-			drawExplosionSphere( explosion, time );
-		}
-
-		// draw item particles
-		cubeShape.bindBuffers( );
-		for( std::list< Particle >::iterator iter = itemparticles.begin( ); iter != itemparticles.end( ); ++iter ) {
-			Particle & itemparticle = *iter;
-
-			drawItemEffect( itemparticle, time );
-		}
-	}
-
-	// post processing
-	{
-		glBindFramebuffer( GL_FRAMEBUFFER, postprocfbo );
-		glViewport( 0, 0, 768, 768 );
-
-		// postprocRT1
-		{
-			glDrawBuffer( GL_COLOR_ATTACHMENT0 );
-			//glClear( GL_COLOR_BUFFER_BIT );
-			glDisable( GL_CULL_FACE );
-			//glDisable( GL_DEPTH_TEST );
-			//glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
-			//glDepthMask( GL_FALSE );
-
-			glDisable( GL_BLEND );
-			//if( doDynamicLighting ) {
-			{
-				contrastShader.useProgram( );
-				contrastShader.setUniform( "projection", identitymatrix );
-				contrastShader.setUniform( "view", identitymatrix );
-				float model [] = { 2.0f, 0.0f, 0.0f, -1.0f,
-									0.0f, -2.0f, 0.0f, 1.0f,
-									0.0f, 0.0f, 1.0f, 0.0f,
-									0.0f, 0.0f, 0.0f, 1.0f };
-
-				contrastShader.setUniform( "model", model );
-				glActiveTexture( GL_TEXTURE0 );
-				glBindTexture( GL_TEXTURE_2D, diffuseRT );
-				contrastShader.setUniform( "texture", 0 );
-				hudquad.bindBuffers( );
-				hudquad.draw( GL_TRIANGLES );
-
-				glEnable( GL_BLEND );
-				glBlendFunc( GL_ONE, GL_ONE );
-			}
-
-			{
-				threedtexShader.useProgram( );
-				threedtexShader.setUniform( "projection", identitymatrix );
-				threedtexShader.setUniform( "view", identitymatrix );
-				threedtexShader.setUniform( "texscale", 1.0f );
-				float model [] = { 2.0f, 0.0f, 0.0f, -1.0f,
-									0.0f, -2.0f, 0.0f, 1.0f,
-									0.0f, 0.0f, 1.0f, 0.0f,
-									0.0f, 0.0f, 0.0f, 1.0f };
-
-				threedtexShader.setUniform( "model", model );
-				glActiveTexture( GL_TEXTURE0 );
-				glBindTexture( GL_TEXTURE_2D, projRT );
-				threedtexShader.setUniform( "texture", 0 );
-				hudquad.bindBuffers( );
-				hudquad.draw( GL_TRIANGLES );
-			}
-		}
-
-		if( doGlow ) {
-			// postprocRT2
-			{
-				glViewport( 0, 0, 384, 384 );
-				glDrawBuffer( GL_COLOR_ATTACHMENT1 );
-				//glClear( GL_COLOR_BUFFER_BIT );
-				glDisable( GL_CULL_FACE );
-				//glDisable( GL_DEPTH_TEST );
-				glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
-				//glDepthMask( GL_FALSE );
-
-				glDisable( GL_BLEND );
-				{
-					blurShader.useProgram( );
-					blurShader.setUniform( "projection", identitymatrix );
-					blurShader.setUniform( "view", identitymatrix );
-					float model [] = { 2.0f, 0.0f, 0.0f, -1.0f,
-										0.0f, -2.0f, 0.0f, 1.0f,
-										0.0f, 0.0f, 1.0f, 0.0f,
-										0.0f, 0.0f, 0.0f, 1.0f };
-
-					blurShader.setUniform( "model", model );
-					glActiveTexture( GL_TEXTURE0 );
-					glBindTexture( GL_TEXTURE_2D, postprocRT1 );
-					blurShader.setUniform( "texture", 0 );
-					hudquad.bindBuffers( );
-					hudquad.draw( GL_TRIANGLES );
-				}
-			}
-
-			// postprocRT1
-			{
-				glViewport( 0, 0, 192, 192 );
-				glDrawBuffer( GL_COLOR_ATTACHMENT0 );
-				//glClear( GL_COLOR_BUFFER_BIT );
-				glDisable( GL_CULL_FACE );
-				//glDisable( GL_DEPTH_TEST );
-				glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
-				//glDepthMask( GL_FALSE );
-
-				glDisable( GL_BLEND );
-				{
-					hblurShader.useProgram( );
-					hblurShader.setUniform( "projection", identitymatrix );
-					hblurShader.setUniform( "view", identitymatrix );
-					float model [] = { 2.0f, 0.0f, 0.0f, -1.0f,
-										0.0f, -2.0f, 0.0f, 1.0f,
-										0.0f, 0.0f, 1.0f, 0.0f,
-										0.0f, 0.0f, 0.0f, 1.0f };
-
-					hblurShader.setUniform( "model", model );
-					glActiveTexture( GL_TEXTURE0 );
-					glBindTexture( GL_TEXTURE_2D, postprocRT2 );
-					hblurShader.setUniform( "texture", 0 );
-					hudquad.bindBuffers( );
-					hudquad.draw( GL_TRIANGLES );
-				}
-			}
-		}
-	}
-
-	// final blend
-	{
-		glBindFramebuffer( GL_FRAMEBUFFER, 0 );
-		glViewport( 0, 0, 768, 768 );
-		glClear( GL_DEPTH_BUFFER_BIT );
-
-		threedtexShader.useProgram( );
-		threedtexShader.setUniform( "projection", identitymatrix );
-		threedtexShader.setUniform( "view", identitymatrix );
-
-		//hudquad.bindBuffers( );
-		// update tessellated quad
-		{
-			float * verts = new float[ tesssize * tesssize * 3 ];
-			for( int y = 0; y < tesssize; y++ ) {
-				for( int x = 0; x < tesssize; x++ ) {
-					verts[ y * tesssize * 3 + x * 3 + 0 ] = x / ( tesssize - 1.0f );
-					verts[ y * tesssize * 3 + x * 3 + 1 ] = y / ( tesssize - 1.0f );
-					verts[ y * tesssize * 3 + x * 3 + 2 ] = 0.0f;
-
-					if( doDistortion ) {
-						for( std::list< Particle >::iterator iter = explosions.begin( ); iter != explosions.end( ); ++iter ) {
-							Particle & explosion = *iter;
-
-							float scale = ( time - explosion.starttime ) / explosion.keepalive;
-
-							float projected[ 4 ];
-							Vec< 4 >::Tor( projected ) = RowMajor< 4, 4, float >( projection ) * RowMajor< 4, 4, float >( view ) * Vector4( explosion.position[ 0 ], explosion.position[ 1 ], explosion.position[ 2 ], 1.0f );
-							Vec< 2 >::Tor( projected ) = ( Vec< 2 >::Tor( projected ) * ( 1.0f / projected[ 3 ] ) ) * 0.5f + Vector2( 0.5f, 0.5f );
-							float currpos [] = { x / ( tesssize - 1.0f ), y / ( tesssize - 1.0f ) };
-							float dir[ 2 ];
-							Vec< 2 >::Tor( dir ) = Vec< 2 >::Tor( projected ) - Vec< 2 >::Tor( currpos );
-							float r = 4.0f * Norm( Vec< 2 >::Tor( dir ) );
-							float sigma = scale * 4.0f + 0.5f;
-
-							float g = ( 1.0f / sqrt( 2.0f * 3.1415926f * sigma * sigma ) ) * exp( -( r * r ) / ( 2.0f * sigma * sigma ) );
-							//float g = r * r;
-
-							Vec< 2 >::Tor( &verts[ y * tesssize * 3 + x * 3 ] ) += ( g / -48.0f ) * Normalize( Vec< 2 >::Tor( dir ) );							
-						}
-					}
-				}
-			}
-
-			tessquad.setBuffer( 0, verts, tesssize * tesssize, 3, GL_DYNAMIC_DRAW );
-		}
-		tessquad.bindBuffers( );
-
-		glDisable( GL_CULL_FACE );
-		glDisable( GL_BLEND );
-		{
-			glActiveTexture( GL_TEXTURE0 );
-			glBindTexture( GL_TEXTURE_2D, ambientRT );
-			threedtexShader.setUniform( "texture", 0 );
-			threedtexShader.setUniform( "texscale", 1.0f );
-
-			float model [] = { 2.0f, 0.0f, 0.0f, -1.0f,
-								0.0f, 2.0f, 0.0f, -1.0f,
-								0.0f, 0.0f, 1.0f, 0.0f,
-								0.0f, 0.0f, 0.0f, 1.0f };
-
-			threedtexShader.setUniform( "model", model );
-			//hudquad.draw( GL_TRIANGLES );
-			tessquad.drawIndexed( GL_TRIANGLES );
-		}
-		glEnable( GL_BLEND );
-		glBlendFunc( GL_ONE, GL_ONE );
-		{
-			glActiveTexture( GL_TEXTURE0 );
-			glBindTexture( GL_TEXTURE_2D, diffuseRT );
-			threedtexShader.setUniform( "texture", 0 );
-			threedtexShader.setUniform( "texscale", 1.0f );
-
-			float model [] = { 2.0f, 0.0f, 0.0f, -1.0f,
-								0.0f, 2.0f, 0.0f, -1.0f,
-								0.0f, 0.0f, 1.0f, 0.0f,
-								0.0f, 0.0f, 0.0f, 1.0f };
-
-			threedtexShader.setUniform( "model", model );
-			//hudquad.draw( GL_TRIANGLES );
-			tessquad.drawIndexed( GL_TRIANGLES );
-		}
-		{
-			glActiveTexture( GL_TEXTURE0 );
-			glBindTexture( GL_TEXTURE_2D, projRT );
-			threedtexShader.setUniform( "texture", 0 );
-			threedtexShader.setUniform( "texscale", 1.0f );
-
-			float model [] = { 2.0f, 0.0f, 0.0f, -1.0f,
-								0.0f, 2.0f, 0.0f, -1.0f,
-								0.0f, 0.0f, 1.0f, 0.0f,
-								0.0f, 0.0f, 0.0f, 1.0f };
-
-			threedtexShader.setUniform( "model", model );
-			//hudquad.draw( GL_TRIANGLES );
-			tessquad.drawIndexed( GL_TRIANGLES );
-		}
-		{
-			glActiveTexture( GL_TEXTURE0 );
-			glBindTexture( GL_TEXTURE_2D, postprocRT1 );
-			threedtexShader.setUniform( "texture", 0 );
-			threedtexShader.setUniform( "texscale", 0.125f );
-
-			float model [] = { 2.0f, 0.0f, 0.0f, -1.0f,
-								0.0f, 2.0f, 0.0f, -1.0f,
-								0.0f, 0.0f, 1.0f, 0.0f,
-								0.0f, 0.0f, 0.0f, 1.0f };
-
-			threedtexShader.setUniform( "model", model );
-			//hudquad.draw( GL_TRIANGLES );
-			tessquad.drawIndexed( GL_TRIANGLES );
-		}
-
-		// draw hud
-		hudquad.bindBuffers( );
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		threedtexShader.setUniform( "texscale", 1.0f );
-
-		if( camera ) {
-			float nextx = 0.0f;
-			for( std::list< Weapon >::const_iterator iter = camera->getWeapons( ).begin( ); iter != camera->getWeapons( ).end( ); ++iter ) {
-				const Weapon & weapon = *iter;
-
-				float scale = 1.0f / 16.0f;
-
-				if( weapon == camera->getCurrentWeapon( ) ) {
-					scale = 1.0f / 8.0f;
-				}
-
-				float model [] = { scale, 0.0f, 0.0f, nextx + 1.0f / 16.0f - 1.0f,
-									0.0f, scale, 0.0f, 1.0f / 16.0f - 1.0f,
-									0.0f, 0.0f, 1.0f, 0.0f,
-									0.0f, 0.0f, 0.0f, 1.0f };
-
-				threedtexShader.setUniform( "model", model );
-				glActiveTexture( GL_TEXTURE0 );
-				glBindTexture( GL_TEXTURE_2D, projTex[ typeid( *weapon.getModel( ) ).name( ) ] );
-				threedtexShader.setUniform( "texture", 0 );
-
-				hudquad.draw( GL_TRIANGLES );
-
-				if( weapon == camera->getCurrentWeapon( ) ) {
-					nextx += 1.0f / 8.0f;
-				} else {
-					nextx += 1.0f / 16.0f;
-				}
-			}
-		}
-
-		// draw scoreboard
-		{
-			glActiveTexture( GL_TEXTURE0 );
-			glBindTexture( GL_TEXTURE_2D, lettersTex );
-			threedtexShader.setUniform( "texture", 0 );
-
-			float scale = 1.0f / 24.0f;
-
-			float starty = 1.0f - scale;
-			for( std::list< ActorModel >::const_iterator iter = game->getActors( ).begin( ); iter != game->getActors( ).end( ); ++iter ) {
-				const ActorModel & actor = *iter;
-
-				float model [] = { scale, 0.0f, 0.0f, -1.0,
-									0.0f, scale, 0.0f, starty,
-									0.0f, 0.0f, 1.0f, 0.0f,
-									0.0f, 0.0f, 0.0f, 1.0f };
-
-				threedtexShader.setUniform( "model", model );
-				actorNameText[ actor.getName( ) ].bindBuffers( );
-				actorNameText[ actor.getName( ) ].drawIndexed( GL_TRIANGLES );
-
-				starty -= scale;
-			}
-
-			starty = 1.0f - scale;
-			for( std::list< ActorModel >::const_iterator iter = game->getActors( ).begin( ); iter != game->getActors( ).end( ); ++iter ) {
-				const ActorModel & actor = *iter;
-
-				float model [] = { scale, 0.0f, 0.0f, -0.5f,
-									0.0f, scale, 0.0f, starty,
-									0.0f, 0.0f, 1.0f, 0.0f,
-									0.0f, 0.0f, 0.0f, 1.0f };
-
-				threedtexShader.setUniform( "model", model );
-				actorScoreText[ actor.getName( ) ].bindBuffers( );
-				actorScoreText[ actor.getName( ) ].drawIndexed( GL_TRIANGLES );
-
-				starty -= scale;
-			}
-		}
-
-		glEnable( GL_CULL_FACE );
-	}
-}*/
 
 void GameView::projStretchVelocity( float * matrix, const Projectile * projectile ) {
 	float speed = Norm( projectile->getVelocity( ) );

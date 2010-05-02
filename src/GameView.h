@@ -38,12 +38,12 @@ Description: Handles all rendering
 
 #include <boost/bind.hpp>
 
-struct Light {
+/*struct Light {
 	Light( const vec3f & _position, const vec3f & _color, float _power ) : position( _position ), color( _color ), power( _power ) { }
 	vec3f position;
 	vec3f color;
 	float power;
-};
+};*/
 
 struct PointLight {
 	PointLight( const vec3f & _position, const vec3f & _color, float _power, float _atten ) : position( _position ), color( _color ), power( _power ), atten( _atten ) { }
@@ -154,8 +154,8 @@ private:
 	void drawBrushes( Shader & shader, const std::string & texparamname, bool usetexture );
 	void drawBrushesNormals( Shader & shader, const std::string & texparamname, bool usetexture );
 
-	void drawWorldShadowMapped( const float * projection, const float * view, const Light & light, const vec3f & lightdirection, const vec3f & lightup, float fov, float lightatten, int & lightiteration, const ActorModel * actorIgnore );
-	void drawWorldLit( const float * projection, const float * view, const Light & light, float lightatten, int & lightiteration );
+	//void drawWorldShadowMapped( const float * projection, const float * view, const Light & light, const vec3f & lightdirection, const vec3f & lightup, float fov, float lightatten, int & lightiteration, const ActorModel * actorIgnore );
+	//void drawWorldLit( const float * projection, const float * view, const Light & light, float lightatten, int & lightiteration );
 	void drawHealthBar( const ActorModel & actor );
 	void drawDyingActor( const ActorModel & actor, float time );
 	void drawExplosionSphere( const Particle & explosion, float time );
@@ -190,10 +190,9 @@ private:
 	static void genTexture( std::istream & stream, GLuint & texid );
 	static void genNormalTexture( std::istream & stream, GLuint & texid );
 
-	Shader plainShader, ambientShader, threedtexlightShader, threedtexlightshadowShader;
-	Shader plainanimShader, ambientanimShader, threedtexlightanimShader, threedtexlightshadowanimShader;
+	Shader plainShader;
+	Shader plainanimShader;
 	Shader projShader, threedtexShader;
-	Shader blurShader, hblurShader, contrastShader;
 	DrawableObject playerModel, cubeShape, coneShape, sphereShape, weaponBox, hudquad, tessquad;
 	static const int tesssize = 16;
 	float playerModelSize;
@@ -238,7 +237,7 @@ private:
 	std::list< Particle > explosions;
 	std::list< Particle > itemparticles;
 
-	std::list< Light > lights;
+	//std::list< Light > lights;
 	std::list< PointLight > pointlights;
 	std::list< SpotLight > spotlights;
 	std::list< DirectionalLight > directionallights;
