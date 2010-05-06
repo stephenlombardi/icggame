@@ -32,8 +32,10 @@ Description: Handles all rendering
 
 #include <algorithm>
 #include <fstream>
+#include <functional>
 #include <sstream>
 #include <map>
+#include <typeinfo>
 #include <vector>
 
 #include <boost/bind.hpp>
@@ -199,8 +201,10 @@ private:
 
 	// animation
 	BoneMatrixContainer boneMatrices;
-	std::vector< JointAnimation > walkAnimation;
+	//std::vector< JointAnimation > walkAnimation;
+	std::map< std::string, std::vector< JointAnimation > > animationMap;
 	std::map< std::string, float > walkTimer;
+	std::map< std::string, std::string > actorAnimation;
 	float walkAnimationSpeed;
 
 	GLuint notexTex;

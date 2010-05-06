@@ -419,10 +419,31 @@ void GameView::initPlayerModel( ) {
 		boneMatrices.Calculate( );
 
 		std::vector< JointAnimation > jointAnimations = meshloader.GetJointAnimations( );
-		for( size_t i = 0; i < jointAnimations.size( ); i++ ) {
+		/*for( size_t i = 0; i < jointAnimations.size( ); i++ ) {
 			walkAnimation.push_back( jointAnimations[ i ].Extract( 2.0f / meshloader.GetAnimationFPS( ), 20.0f / meshloader.GetAnimationFPS( ) ) );
-		}
+		}*/
 
+		{
+			std::ifstream infostream( "zombie02.txt", std::ios::binary );
+			std::map< std::string, std::pair< int, int > > animationinfo;
+			while( infostream ) {
+				std::string animationname;
+				int startframe, endframe;
+				infostream >> animationname >> startframe >> endframe;
+				if( infostream ) {
+					animationinfo[ animationname ] = std::make_pair( startframe, endframe );
+					std::cout << "animation: " << animationname << std::endl;
+				}
+			}
+			infostream.close( );
+
+			for( std::map< std::string, std::pair< int, int > >::iterator iter = animationinfo.begin( ); iter != animationinfo.end( ); ++iter ) {
+				animationMap[ iter->first ].resize( jointAnimations.size( ) );
+				for( size_t i = 0; i < jointAnimations.size( ); i++ ) {
+					animationMap[ iter->first ][ i ] = jointAnimations[ i ].Extract( iter->second.first / meshloader.GetAnimationFPS( ), iter->second.second / meshloader.GetAnimationFPS( ) );
+				}
+			}
+		}
 
 		std::vector< float > vertices = meshloader.GetVertices( );
 		std::vector< float > normals = meshloader.GetNormals( );
@@ -586,6 +607,7 @@ void GameView::uninitActorText( ) {
 
 	/// ehhhh this shouldn't be here
 	walkTimer.clear( );
+	actorAnimation.clear( );
 }
 
 void GameView::uninitTextures( ) {
@@ -713,7 +735,8 @@ vec3f GameView::getViewDir( ) const {
 	if( camera ) {
 		const vec3f & viewpos = camera->getPosition( );
 		const vec3f & viewdir = camera->getOrientation( );
-		if( firstperson ) {
+		if( firstperson ) {			//std::vector< mat4f > transformations( walkAnimation.size( ) );
+
 			return Vector3N( viewdir[ 0 ] * 128.0f, 96.0f - 128.0f, viewdir[ 2 ] * 128.0f );
 			//lookat( view, viewpos[ 0 ] - viewdir[ 0 ] * 128.0f, 128.0f, viewpos[ 2 ] - viewdir[ 2 ] * 128.0f, viewpos[ 0 ], 96.0f, viewpos[ 2 ], 0.0f, 1.0f, 0.0f );
 		} else {
@@ -759,6 +782,7 @@ void GameView::addActor( const ActorModel & actor ) {
 	const std::string & name = actor.getName( );
 
 	walkTimer[ name ] = 0.0f;
+	actorAnimation[ name ] = "walk1";
 
 	actorKills[ name ] = 0;
 	actorDeaths[ name ] = 0;
@@ -803,6 +827,7 @@ void GameView::removeActor( const ActorModel & actor ) {
 	}
 
 	walkTimer.erase( actor.getName( ) );
+	actorAnimation.erase( actor.getName( ) );
 
 	actorNameText[ actor.getName( ) ].destroyVAO( );
 	actorNameText.erase( actor.getName( ) );
@@ -1013,10 +1038,10 @@ void GameView::update( float time ) {
 		particle.velocity += Vector3( 0.0f, -0.25f, 0.0f );
 	}
 
-	particles.remove_if( std::bind2nd( std::mem_fun1_ref( &Particle::isDead ), time ) );
-	bloodparticles.remove_if( std::bind2nd( std::mem_fun1_ref( &Particle::isDead ), time ) );
-	explosions.remove_if( std::bind2nd( std::mem_fun1_ref( &Particle::isDead ), time ) );
-	itemparticles.remove_if( std::bind2nd( std::mem_fun1_ref( &Particle::isDead ), time ) );
+	particles.remove_if( std::bind2nd( std::mem_fun_ref( &Particle::isDead ), time ) );
+	bloodparticles.remove_if( std::bind2nd( std::mem_fun_ref( &Particle::isDead ), time ) );
+	explosions.remove_if( std::bind2nd( std::mem_fun_ref( &Particle::isDead ), time ) );
+	itemparticles.remove_if( std::bind2nd( std::mem_fun_ref( &Particle::isDead ), time ) );
 
 	// update walk timer
 	for( std::list< ActorModel >::const_iterator iter = game->getActors( ).begin( ); iter != game->getActors( ).end( ); ++iter ) {
@@ -1071,9 +1096,13 @@ void GameView::drawActors( Shader & shader, const ActorModel * actorIgnore ) {
 			const vec3f & forwardvec = actor.getOrientation( );
 			vec3f rightvec = CrossProduct( upvec, forwardvec );
 
-			std::vector< mat4f > transformations( walkAnimation.size( ) );
-			for( size_t i = 0; i < walkAnimation.size( ); i++ ) {
-				transformations[ i ] = KeyframeMatrix( walkAnimation[ i ].GetInterpolatedKeyframe( walkTimer[ actor.getName( ) ], true ) );
+			std::vector< JointAnimation > & animation = animationMap[ actorAnimation[ actor.getName( ) ] ];
+			//std::vector< mat4f > transformations( walkAnimation.size( ) );
+			std::vector< mat4f > transformations( animation.size( ) );
+			//for( size_t i = 0; i < walkAnimation.size( ); i++ ) {
+			for( size_t i = 0; i < animation.size( ); i++ ) {
+				//transformations[ i ] = KeyframeMatrix( walkAnimation[ i ].GetInterpolatedKeyframe( walkTimer[ actor.getName( ) ], true ) );
+				transformations[ i ] = KeyframeMatrix( animation[ i ].GetInterpolatedKeyframe( walkTimer[ actor.getName( ) ], true ) );
 			}
 			boneMatrices.Calculate( transformations.begin( ), transformations.end( ) );
 			shader.setUniform( "bonematrices", &boneMatrices.GetMatrices( )[ 0 ]( 0, 0 ), boneMatrices.GetMatrices( ).size( ) );
