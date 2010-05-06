@@ -6,6 +6,7 @@ Description: handles all game logic
 #ifndef _GameModel_h
 #define _GameModel_h
 
+#include <cstdlib>
 #include <list>
 #include <vector>
 #include <string>

@@ -8,6 +8,7 @@ Description: Weapon information
 
 #include <iostream>
 #include <string>
+#include <typeinfo>
 
 #include <slib/Matrix.hpp>
 

@@ -318,7 +318,7 @@ void constructPathGraph( GameModel & game, PathGraph & pathgraph ) {
 			bool intersection = false;
 			for( std::list< PlanarVolume< 3, float, TexturedPlane< 3, float > > >::iterator iter = game.getBrushes( ).begin( ); iter != game.getBrushes( ).end( ); iter++ ) {
 				PlanarVolume< 3, float, TexturedPlane< 3, float > > & plane = *iter;
-				PlanarVolumeIntersection< 3, float, TexturedPlane< 3, float > > & planeintersection = plane.IntersectLine( vertex, vertex, SphereOffsetCalc< 3, float >( 16.0f ) );
+				const PlanarVolumeIntersection< 3, float, TexturedPlane< 3, float > > & planeintersection = plane.IntersectLine( vertex, vertex, SphereOffsetCalc< 3, float >( 16.0f ) );
 				if( intersection = planeintersection.enterfraction == -std::numeric_limits< float >::infinity( ) ) {
 					break;
 				}

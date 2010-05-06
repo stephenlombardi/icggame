@@ -1,7 +1,7 @@
 #include "GameModel.h"
 
 float uniformRand( ) {
-	return (float)rand( ) / RAND_MAX;
+	return (float)std::rand( ) / RAND_MAX;
 }
 
 float sphereIntersection( const vec3f & position0, const vec3f & velocity0, float radius0, const vec3f & position1, const vec3f & velocity1, float radius1 ) {
@@ -131,7 +131,7 @@ vec3f GameModel::getRandomSpawnPoint( ) const {
 	bool done;
 	do {
 		done = true;
-		rindex = rand( ) % spawnPoints.size( );
+		rindex = std::rand( ) % spawnPoints.size( );
 		for( std::list< ActorModel >::const_iterator iter = actors.begin( ); iter != actors.end( ); ++iter ) {
 			const ActorModel & actor = *iter;
 			const Matrix< 2, 1, float > spawnpoint2d = Vector2( spawnPoints[ rindex ][ 0 ], spawnPoints[ rindex ][ 2 ] );
