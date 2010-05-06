@@ -28,7 +28,7 @@ vec3f ActorControllerKeyboardFP::getMoveDirection( ) const {
 	return norm > 0.0f ? Normalize( dir ) : dir;
 }
 
-vec3f ActorControllerKeyboardFP::getLookDirection( ) const { return Vector3( cos( angle * 3.0f ), 0.0f, sin( angle * 3.0f ) ); }
+vec3f ActorControllerKeyboardFP::getLookDirection( ) const { return Vector3( std::cos( angle * 3.0f ), 0.0f, std::sin( angle * 3.0f ) ); }
 int ActorControllerKeyboardFP::getWeaponSwitch( ) const {
 	return keyboard[ '1' ] ? 0 :
 		keyboard[ '2' ] ? 1 :

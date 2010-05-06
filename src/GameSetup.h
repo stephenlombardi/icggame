@@ -30,6 +30,10 @@ PlanarVolume< 3, float, TexturedPlane< 3, float > > mapBrushToPlanarVolume( cons
 void addWorldspawn( GameModel & game, GameView & view, Map::Entity & entity );
 void constructPathGraph( GameModel & game, PathGraph & pathgraph );
 
+void addWeapons( ActorModel & actor, std::map< std::string, float > & globalVariables );
+//void removeWeapons( ActorModel & actor );
+void resetActorVars( GameModel & game, std::map< std::string, float > & globalVariables );
+
 //void addPlayer( GameModel & game, ActorControllerKeyboard * keyboardController, std::map< std::string, float > & globalVariables, float gametime, const std::string & name );
 //void addAI( GameModel & game, ActorControllerAI * aiController, std::map< std::string, float > & globalVariables, float gametime, const std::string & name );
 template< class ControllerT >
@@ -41,10 +45,6 @@ void addActor( GameModel & game, ControllerT * controller, std::map< std::string
 	addWeapons( game.getActors( ).back( ), globalVariables );
 	//return &game.getActors( ).back( );
 }
-
-void addWeapons( ActorModel & actor, std::map< std::string, float > & globalVariables );
-//void removeWeapons( ActorModel & actor );
-void resetActorVars( GameModel & game, std::map< std::string, float > & globalVariables );
 
 Weapon createKnife( std::map< std::string, float > & globalVariables );
 Weapon createMachinegun( std::map< std::string, float > & globalVariables );

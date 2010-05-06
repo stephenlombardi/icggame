@@ -205,7 +205,7 @@ private:
 template< class FuncT >
 class ConsoleFuncPassT_t< FuncT, ActorModel > {
 public:
-	ConsoleFuncPassT_t( FuncT _func ) : func( _func ) { }
+	ConsoleFuncPassT_t( FuncT _func, const GameModel & _game ) : func( _func ), game( _game ) { }
 	std::string operator( )( const std::string & str ) {
 		std::string cmdname, actorname;
 		std::istringstream strstream( str );
@@ -225,6 +225,7 @@ public:
 	}
 private:
 	FuncT func;
+	const GameModel & game;
 };
 
 template< class T >

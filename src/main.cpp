@@ -199,7 +199,7 @@ void initConsole( ) {
 	consolefuncs[ "set-ambient-intensity" ] = ConsolePass< float >::Func( boost::bind( &GameView::setAmbientIntensity, boost::ref( view ), _1 ) );
 	consolefuncs[ "set-walk-animation-speed" ] = ConsolePass< float >::Func( boost::bind( &GameView::setWalkAnimationSpeed, boost::ref( view ), _1 ) );
 	consolefuncs[ "set-first-person" ] = ConsolePass< bool >::Func( boost::bind( setFirstPerson, boost::ref( game ), boost::ref( view ), boost::ref( keyboardController ), _1 ) );
-	consolefuncs[ "set-camera" ] = ConsolePass< ActorModel >::Func( boost::bind( setCamera, boost::ref( view ), boost::ref( sound ), _1 ) );
+	consolefuncs[ "set-camera" ] = ConsolePass< ActorModel >::Func( boost::bind( setCamera, boost::ref( view ), boost::ref( sound ), _1 ), game );
 	consolefuncs[ "set-camera-null" ] = ConsoleFunc( boost::bind( setCamera, boost::ref( view ), boost::ref( sound ), (ActorModel *)0 ) );
 	consolefuncs[ "set-global" ] = ConsolePass2< std::string, float >::Func( boost::bind( setGlobal, boost::ref( game ), boost::ref( globalVariables ), _1, _2 ) );
 	consolefuncs[ "get-global" ] = ConsolePass< std::string >::ReturnS( boost::bind( getGlobal, boost::ref( globalVariables ), _1 ) );
